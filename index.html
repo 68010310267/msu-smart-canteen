@@ -64,7 +64,7 @@ select{
 
 button{
     border:none;
-    padding:6px 12px;
+    padding:8px 14px;
     border-radius:8px;
     cursor:pointer;
     font-weight:bold;
@@ -76,6 +76,13 @@ button{
 
 .minus{
     background:#ddd;
+}
+
+.pay-btn{
+    background:#28a745;
+    color:white;
+    width:100%;
+    margin-top:15px;
 }
 
 .cart{
@@ -90,14 +97,6 @@ button{
     margin-top:10px;
     font-size:18px;
 }
-
-.pay-btn{
-    width:100%;
-    background:#28a745;
-    color:white;
-    padding:12px;
-    font-size:16px;
-}
 </style>
 </head>
 
@@ -111,37 +110,22 @@ button{
 <option value="">-- เลือกร้านอาหาร --</option>
 </select>
 
+<select id="tableSelect">
+<option value="">-- เลือกโต๊ะ (1-70) --</option>
+</select>
+
 <div id="menuArea"></div>
 
 <div class="cart">
 <h3>ตะกร้า</h3>
 <div id="cartItems"></div>
 <div class="total">รวม: <span id="totalPrice">0</span> บาท</div>
-</div>
-
-<div class="card">
-<h3>เลือกโต๊ะ</h3>
-<select id="tableSelect">
-<option value="">-- เลือกหมายเลขโต๊ะ --</option>
-</select>
-
-<button onclick="checkout()" class="pay-btn">
-ชำระเงิน
-</button>
-</div>
-
-<div id="paymentArea" style="display:none;" class="card">
-<h3>สแกนเพื่อชำระเงิน</h3>
-<p id="summary"></p>
-
-<img src="BA46DB23-10DE-40B5-B697-5F0BCF7D3FB7.jpeg"
-style="width:100%;max-width:350px;border-radius:10px;">
+<button class="pay-btn" onclick="payOnline()">จ่ายเงินออนไลน์</button>
 </div>
 
 </div>
 
 <script>
-
 const shops = [
 {
 name:"ร้าน สมฤทธิ์ ทรัพย์เจริญสุข",
@@ -160,17 +144,122 @@ items:[
 {name:"ผัดซีอิ๊ว",price:45},
 {name:"สุกี้",price:50}
 ]
+},
+{
+name:"ร้าน เปิดย่างเตชา",
+items:[
+{name:"คอหมูย่าง",price:60},
+{name:"ไก่ย่าง",price:50},
+{name:"หมูย่าง",price:50},
+{name:"ข้าวเหนียว",price:10}
+]
+},
+{
+name:"ร้าน พี่ 2 น้อง 1",
+items:[
+{name:"ผัดผักรวม",price:40},
+{name:"ผัดคะน้าหมูกรอบ",price:55},
+{name:"ผัดพริกแกง",price:50}
+]
+},
+{
+name:"ร้าน ตำ เตี๋ยว",
+items:[
+{name:"ตำไทย",price:40},
+{name:"ตำปู",price:45},
+{name:"ยำวุ้นเส้น",price:50}
+]
+},
+{
+name:"ร้าน เฮียโจ๊กข้าวมันไก่ ข้าวขาหมู",
+items:[
+{name:"ข้าวมันไก่",price:40},
+{name:"ข้าวขาหมู",price:50},
+{name:"ข้าวหมูกรอบ",price:50}
+]
+},
+{
+name:"ร้าน ฮาวา ฮาลาลฟู้ดส์",
+items:[
+{name:"ข้าวหมกไก่",price:50},
+{name:"โรตี",price:20},
+{name:"ซุปไก่",price:40}
+]
+},
+{
+name:"ร้าน มุมแดง หมาล่า",
+items:[
+{name:"หมาล่าเสียบไม้",price:10},
+{name:"เห็ดพันเบคอน",price:15}
+]
+},
+{
+name:"ร้าน ข้าวเหนียวห่อสุโขทัย",
+items:[
+{name:"ข้าวห่อ 1 อย่าง",price:25},
+{name:"ข้าวห่อ 2 อย่าง",price:30}
+]
+},
+{
+name:"ร้าน Wonderfruit",
+items:[
+{name:"ผลไม้รวม",price:30},
+{name:"น้ำผลไม้ปั่น",price:35}
+]
+},
+{
+name:"ร้าน ตำซุมแพ แม่มด แซ่บนัว",
+items:[
+{name:"ตำซุมแพ",price:50},
+{name:"ตำถาด",price:99}
+]
+},
+{
+name:"ร้าน บ้านเครป",
+items:[
+{name:"เครปช็อกโกแลต",price:30},
+{name:"มินิแพนเค้ก",price:25}
+]
+},
+{
+name:"ร้าน แม่แอนก๋วยเตี๋ยวรสเด็ด",
+items:[
+{name:"ก๋วยเตี๋ยวหมู",price:45},
+{name:"เย็นตาโฟ",price:50}
+]
+},
+{
+name:"ร้าน ยูอิ หวานเย็น",
+items:[
+{name:"น้ำแข็งใส",price:40},
+{name:"ทับทิมกรอบ",price:45}
+]
+},
+{
+name:"ร้าน โกเบิร์ด ราดแกง",
+items:[
+{name:"ข้าวราดแกง 2 อย่าง",price:40},
+{name:"ไข่ดาว",price:10}
+]
+},
+{
+name:"ร้าน ลูกชิ้นปิ้งปิ้ง",
+items:[
+{name:"ลูกชิ้นหมู",price:10},
+{name:"ชุดรวม",price:50}
+]
 }
 ];
 
 const shopSelect = document.getElementById("shopSelect");
+const tableSelect = document.getElementById("tableSelect");
 const menuArea = document.getElementById("menuArea");
 const cartItems = document.getElementById("cartItems");
 const totalPrice = document.getElementById("totalPrice");
-const tableSelect = document.getElementById("tableSelect");
 
 let cart = {};
 
+// โหลดร้าน
 shops.forEach((shop,index)=>{
     let option=document.createElement("option");
     option.value=index;
@@ -178,7 +267,7 @@ shops.forEach((shop,index)=>{
     shopSelect.appendChild(option);
 });
 
-// สร้างโต๊ะ 1-70
+// โหลดโต๊ะ 1-70
 for(let i=1;i<=70;i++){
     let option=document.createElement("option");
     option.value=i;
@@ -238,31 +327,25 @@ function renderCart(){
     totalPrice.innerText=total;
 }
 
-function checkout(){
+function payOnline(){
     let table = tableSelect.value;
     let total = totalPrice.innerText;
 
     if(!table){
-        alert("กรุณาเลือกโต๊ะก่อน");
+        alert("กรุณาเลือกโต๊ะก่อนชำระเงิน");
         return;
     }
 
-    if(total==0){
-        alert("กรุณาเลือกอาหารก่อน");
+    if(total == 0){
+        alert("ไม่มีรายการในตะกร้า");
         return;
     }
 
-    document.getElementById("summary").innerText =
-        "โต๊ะ: "+table+" | ยอดชำระ: "+total+" บาท";
+    alert("ชำระเงินสำเร็จ ✅\nโต๊ะ: "+table+"\nยอดชำระ: "+total+" บาท");
 
-    document.getElementById("paymentArea").style.display="block";
-
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-    });
+    cart = {};
+    renderCart();
 }
-
 </script>
 
 </body>
