@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSU Smart Canteen</title>
+<style>
+body{
+font-family: Arial, sans-serif;
+background:#f4f6f9;
+text-align:center;
+padding:30px;
+}
+.container{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+max-width:400px;
+margin:auto;
+}
+h1{
+color:#6a0dad;
+}
+input{
+width:90%;
+padding:10px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+button{
+background:#6a0dad;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+button:hover{
+background:#520a9e;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>🍽 MSU Smart Canteen</h1>
+<p>กรอกเลขโต๊ะ (1 - 70)</p>
+
+<input type="number" id="tableNumber" placeholder="ใส่เลขโต๊ะ">
+
+<br>
+
+<button onclick="order()">เริ่มสั่งอาหาร</button>
+
+<p id="result"></p>
+</div>
+
+<script>
+function order(){
+let table = document.getElementById("tableNumber").value;
+if(table >=1 && table <=70){
+document.getElementById("result").innerHTML =
+"✅ โต๊ะ " + table + " พร้อมสั่งอาหารแล้ว!<br><br>ไปหน้าชำระเงินผ่านเว็บได้เลย";
+}else{
+document.getElementById("result").innerHTML =
+"❌ กรุณากรอกเลขโต๊ะ 1 - 70";
+}
+}
+</script>
+
+</body>
+</html>
