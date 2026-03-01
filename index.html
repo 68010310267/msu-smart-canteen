@@ -1,3 +1,130 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSU Canteen</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:linear-gradient(90deg,#f7c948,#e0e0e0);
+    padding:18px;
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+}
+
+.wrapper{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+select{
+    width:100%;
+    padding:6px;
+    font-size:14px;
+    border-radius:8px;
+    border:2px solid #f7c948;
+    margin-top:5px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.card h3{
+    margin-top:0;
+    border-bottom:2px solid #f7c948;
+    padding-bottom:8px;
+}
+
+.menu-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:15px 0;
+}
+
+.controls{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+button{
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.plus{
+    background:#f7c948;
+}
+
+.minus{
+    background:#ddd;
+}
+
+.pay-btn{
+    background:#28a745;
+    color:white;
+    width:100%;
+    margin-top:15px;
+}
+
+.cart{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.total{
+    font-weight:bold;
+    margin-top:10px;
+    font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<header>MSU CANTEEN</header>
+
+<div class="wrapper">
+
+<select id="shopSelect">
+<option value="">-- เลือกร้านอาหาร --</option>
+</select>
+
+<select id="tableSelect">
+<option value="">-- เลือกโต๊ะ (1-70) --</option>
+</select>
+
+<div id="menuArea"></div>
+
+<div class="cart">
+<h3>ตะกร้า</h3>
+<div id="cartItems"></div>
+<div class="total">รวม: <span id="totalPrice">0</span> บาท</div>
+<button class="pay-btn" onclick="payOnline()">จ่ายเงินออนไลน์</button>
+</div>
+
+</div>
+
 <script>
 const shops = [
 {
@@ -232,3 +359,6 @@ function payOnline(){
     renderCart();
 }
 </script>
+
+</body>
+</html>
