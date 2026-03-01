@@ -3,146 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSU Smart Canteen</title>
+<title>MSU Canteen</title>
 
 <style>
-body{font-family:Arial;margin:0;background:#f2f2f2;}
-header{background:#f7c948;padding:15px;text-align:center;font-size:22px;font-weight:bold;color:#333;}
-.container{padding:15px;}
-.card{background:white;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 3px 8px rgba(0,0,0,0.1);}
-.hidden{display:none;}
-button{background:#555;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;}
-button:hover{background:#333;}
-.primary{background:#f7c948;color:#333;width:100%;padding:10px;margin-top:10px;font-weight:bold;}
-.menu-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.qty-controls button{padding:3px 8px;margin:0 3px;}
-.total{font-weight:bold;font-size:18px;margin-top:10px;}
-select,input{width:100%;padding:8px;margin-top:8px;border-radius:6px;border:1px solid #ccc;}
+body{
+    margin:0;
+    font-family: 'Prompt', sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:linear-gradient(90deg,#f7c948,#e0e0e0);
+    padding:15px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap:15px;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    padding:15px;
+}
+
+.card h3{
+    margin-top:0;
+    color:#444;
+    border-bottom:2px solid #f7c948;
+    padding-bottom:5px;
+}
+
+.menu-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:8px 0;
+}
+
+.controls{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+button{
+    border:none;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.plus{
+    background:#f7c948;
+}
+
+.minus{
+    background:#ddd;
+}
+
+.cart{
+    position:fixed;
+    right:0;
+    top:0;
+    width:280px;
+    height:100%;
+    background:white;
+    border-left:3px solid #f7c948;
+    padding:15px;
+    overflow:auto;
+}
+
+.cart h3{
+    text-align:center;
+}
+
+.total{
+    font-weight:bold;
+    margin-top:10px;
+}
 </style>
 </head>
+
 <body>
 
-<header>🍽 MSU Smart Canteen</header>
+<header>MSU CANTEEN</header>
 
-<div class="container">
+<div class="container" id="menuContainer"></div>
 
-<div id="tablePage" class="card">
-<h3>กรอกเลขโต๊ะ (1-70)</h3>
-<input type="number" id="tableNumber">
-<button class="primary" onclick="startOrder()">เริ่มสั่งอาหาร</button>
-</div>
-
-<div id="menuPage" class="hidden">
-
-<div class="card">
-<h3>โต๊ะ: <span id="showTable"></span></h3>
-
-<h4>เลือกร้านอาหาร (1-16)</h4>
-<select id="restaurantSelect">
-<option>ร้านที่ 1 ข้าวตามสั่ง</option>
-<option>ร้านที่ 2 ก๋วยเตี๋ยว</option>
-<option>ร้านที่ 3 ผัดไทย</option>
-<option>ร้านที่ 4 อาหารอีสาน</option>
-<option>ร้านที่ 5 ข้าวมันไก่</option>
-<option>ร้านที่ 6 สเต็ก</option>
-<option>ร้านที่ 7 ชานม</option>
-<option>ร้านที่ 8 น้ำผลไม้</option>
-<option>ร้านที่ 9 ของหวาน</option>
-<option>ร้านที่ 10 โรตี</option>
-<option>ร้านที่ 11 เบเกอรี่</option>
-<option>ร้านที่ 12 หมูกระทะ</option>
-<option>ร้านที่ 13 ซูชิ</option>
-<option>ร้านที่ 14 อาหารคลีน</option>
-<option>ร้านที่ 15 ข้าวแกง</option>
-<option>ร้านที่ 16 อาหารใต้</option>
-</select>
-</div>
-
-<div class="card">
-<h3>เมนู</h3>
-
-<div class="menu-row">
-<span>ข้าวผัด - 50</span>
-<div class="qty-controls">
-<button onclick="changeQty('ข้าวผัด',50,-1)">-</button>
-<span id="qty-ข้าวผัด">0</span>
-<button onclick="changeQty('ข้าวผัด',50,1)">+</button>
-</div>
-</div>
-
-<div class="menu-row">
-<span>กะเพราไก่ - 55</span>
-<div class="qty-controls">
-<button onclick="changeQty('กะเพราไก่',55,-1)">-</button>
-<span id="qty-กะเพราไก่">0</span>
-<button onclick="changeQty('กะเพราไก่',55,1)">+</button>
-</div>
-</div>
-
-<div class="menu-row">
-<span>ชาเย็น - 25</span>
-<div class="qty-controls">
-<button onclick="changeQty('ชาเย็น',25,-1)">-</button>
-<span id="qty-ชาเย็น">0</span>
-<button onclick="changeQty('ชาเย็น',25,1)">+</button>
-</div>
-</div>
-
-</div>
-
-<div class="card">
-<h3>🛒 ตะกร้า</h3>
-<div id="cartList"></div>
-<div class="total">รวม: <span id="total">0</span> บาท</div>
-<button class="primary" onclick="pay()">ชำระเงิน</button>
-</div>
-
-</div>
+<div class="cart">
+    <h3>ตะกร้า</h3>
+    <div id="cartItems"></div>
+    <div class="total">รวม: <span id="totalPrice">0</span> บาท</div>
 </div>
 
 <script>
+const data = [
+{
+name:"ร้าน สมฤทธิ์ ทรัพย์เจริญสุข",
+items:[
+{name:"กะเพราหมู",price:45},
+{name:"กะเพราไก่",price:40},
+{name:"ข้าวผัดหมู",price:45},
+{name:"ไข่ดาว",price:10}
+]
+},
+{
+name:"ร้าน บัวจีน",
+items:[
+{name:"ผัดไทย",price:50},
+{name:"ราดหน้า",price:45},
+{name:"ผัดซีอิ๊ว",price:45},
+{name:"สุกี้",price:50}
+]
+},
+{
+name:"ร้าน เปิดย่างเตชา",
+items:[
+{name:"คอหมูย่าง",price:60},
+{name:"ไก่ย่าง",price:50},
+{name:"หมูย่าง",price:50},
+{name:"ข้าวเหนียว",price:10}
+]
+},
+{
+name:"ร้าน พี่ 2 น้อง 1",
+items:[
+{name:"ผัดผักรวม",price:40},
+{name:"ผัดคะน้าหมูกรอบ",price:55},
+{name:"ผัดพริกแกง",price:50}
+]
+},
+{
+name:"ร้าน ตำ เตี๋ยว",
+items:[
+{name:"ตำไทย",price:40},
+{name:"ตำปู",price:45},
+{name:"ยำวุ้นเส้น",price:50}
+]
+},
+{
+name:"ร้าน เฮียโจ๊กข้าวมันไก่ ข้าวขาหมู",
+items:[
+{name:"ข้าวมันไก่",price:40},
+{name:"ข้าวขาหมู",price:50},
+{name:"ข้าวหมูกรอบ",price:50}
+]
+},
+{
+name:"ร้าน ฮาวา ฮาลาลฟู้ดส์",
+items:[
+{name:"ข้าวหมกไก่",price:50},
+{name:"โรตี",price:20},
+{name:"ซุปไก่",price:40}
+]
+},
+{
+name:"ร้าน มุมแดง หมาล่า",
+items:[
+{name:"หมาล่าเสียบไม้",price:10},
+{name:"เห็ดพันเบคอน",price:15}
+]
+},
+{
+name:"ร้าน ข้าวเหนียวห่อสุโขทัย",
+items:[
+{name:"ข้าวห่อ 1 อย่าง",price:25},
+{name:"ข้าวห่อ 2 อย่าง",price:30}
+]
+},
+{
+name:"ร้าน Wonderfruit",
+items:[
+{name:"ผลไม้รวม",price:30},
+{name:"น้ำผลไม้ปั่น",price:35}
+]
+},
+{
+name:"ร้าน ตำซุมแพ แม่มด แซ่บนัว",
+items:[
+{name:"ตำซุมแพ",price:50},
+{name:"ตำถาด",price:99}
+]
+},
+{
+name:"ร้าน บ้านเครป",
+items:[
+{name:"เครปช็อกโกแลต",price:30},
+{name:"มินิแพนเค้ก",price:25}
+]
+},
+{
+name:"ร้าน แม่แอนก๋วยเตี๋ยวรสเด็ด",
+items:[
+{name:"ก๋วยเตี๋ยวหมู",price:45},
+{name:"เย็นตาโฟ",price:50}
+]
+},
+{
+name:"ร้าน ยูอิ หวานเย็น",
+items:[
+{name:"น้ำแข็งใส",price:40},
+{name:"ทับทิมกรอบ",price:45}
+]
+},
+{
+name:"ร้าน โกเบิร์ด ราดแกง",
+items:[
+{name:"ข้าวราดแกง 2 อย่าง",price:40},
+{name:"ไข่ดาว",price:10}
+]
+},
+{
+name:"ร้าน ลูกชิ้นปิ้งปิ้ง",
+items:[
+{name:"ลูกชิ้นหมู",price:10},
+{name:"ชุดรวม",price:50}
+]
+}
+];
+
+const container = document.getElementById("menuContainer");
+const cartItems = document.getElementById("cartItems");
+const totalPrice = document.getElementById("totalPrice");
+
 let cart = {};
-let total = 0;
-let tableNumber = 0;
 
-function startOrder(){
-let t=document.getElementById("tableNumber").value;
-if(t>=1 && t<=70){
-tableNumber=t;
-document.getElementById("showTable").innerText=t;
-document.getElementById("tablePage").classList.add("hidden");
-document.getElementById("menuPage").classList.remove("hidden");
-}else{alert("กรอกเลขโต๊ะ 1-70");}
-}
-
-function changeQty(name,price,delta){
-if(!cart[name]) cart[name]={qty:0,price:price};
-cart[name].qty+=delta;
-if(cart[name].qty<0) cart[name].qty=0;
-updateCart();
-}
-
-function updateCart(){
-total=0;
-let html="";
-for(let item in cart){
-if(cart[item].qty>0){
-let sub=cart[item].qty*cart[item].price;
-total+=sub;
-html+=item+" x "+cart[item].qty+" = "+sub+" บาท<br>";
-}
-document.getElementById("qty-"+item).innerText=cart[item].qty;
-}
-document.getElementById("cartList").innerHTML=html;
-document.getElementById("total").innerText=total;
+function renderMenu(){
+data.forEach(shop=>{
+    let card = document.createElement("div");
+    card.className="card";
+    card.innerHTML=`<h3>${shop.name}</h3>`;
+    shop.items.forEach(item=>{
+        card.innerHTML+=`
+        <div class="menu-item">
+            <span>${item.name} (${item.price}฿)</span>
+            <div class="controls">
+                <button class="minus" onclick="updateCart('${item.name}',${item.price},-1)">➖</button>
+                <span id="${item.name}">0</span>
+                <button class="plus" onclick="updateCart('${item.name}',${item.price},1)">➕</button>
+            </div>
+        </div>`;
+    });
+    container.appendChild(card);
+});
 }
 
-function pay(){
-if(total===0){alert("ยังไม่มีสินค้าในตะกร้า");return;}
-let shop=document.getElementById("restaurantSelect").value;
-alert("ชำระเงินสำเร็จ 🎉\nโต๊ะ "+tableNumber+"\n"+shop+"\nยอด "+total+" บาท");
-location.reload();
+function updateCart(name,price,change){
+    if(!cart[name]) cart[name]={qty:0,price:price};
+    cart[name].qty+=change;
+    if(cart[name].qty<=0) delete cart[name];
+    document.getElementById(name).innerText = cart[name]?cart[name].qty:0;
+    renderCart();
 }
+
+function renderCart(){
+    cartItems.innerHTML="";
+    let total=0;
+    for(let item in cart){
+        let div=document.createElement("div");
+        div.innerText=`${item} x${cart[item].qty}`;
+        cartItems.appendChild(div);
+        total+=cart[item].qty*cart[item].price;
+    }
+    totalPrice.innerText=total;
+}
+
+renderMenu();
 </script>
 
 </body>
