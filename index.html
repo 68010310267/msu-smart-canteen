@@ -3,125 +3,266 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSU Canteen - เลือกโต๊ะและชำระเงิน</title>
+<title>MSU Canteen</title>
 
 <style>
 body{
-    font-family: Arial, sans-serif;
-    background:#f5f7fa;
-    text-align:center;
     margin:0;
-    padding:0;
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
 }
 
-.container{
-    max-width:500px;
-    margin:40px auto;
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+header{
+    background:linear-gradient(90deg,#f7c948,#e0e0e0);
+    padding:18px;
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
 }
 
-h1{
-    color:#2c3e50;
+.wrapper{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
 }
 
-select, input{
+select{
     width:100%;
-    padding:10px;
-    margin:10px 0;
-    border-radius:8px;
-    border:1px solid #ccc;
+    padding:12px;
+    font-size:16px;
+    border-radius:10px;
+    border:2px solid #f7c948;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.card h3{
+    margin-top:0;
+    border-bottom:2px solid #f7c948;
+    padding-bottom:8px;
+}
+
+.menu-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:12px 0;
+}
+
+.controls{
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 button{
-    background:#27ae60;
-    color:white;
-    padding:12px;
     border:none;
+    padding:6px 12px;
     border-radius:8px;
-    width:100%;
-    font-size:16px;
     cursor:pointer;
+    font-weight:bold;
 }
 
-button:hover{
-    background:#219150;
+.plus{
+    background:#f7c948;
 }
 
-.qr-section{
-    display:none;
-    margin-top:20px;
+.minus{
+    background:#ddd;
 }
 
-.qr-section img{
-    width:250px;
-    border-radius:10px;
+.cart{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
-.success{
-    color:green;
+.total{
     font-weight:bold;
     margin-top:10px;
+    font-size:18px;
+}
+
+.pay-btn{
+    width:100%;
+    background:#28a745;
+    color:white;
+    padding:12px;
+    font-size:16px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>จองโต๊ะ MSU Canteen</h1>
+<header>MSU CANTEEN</header>
 
-    <label>เลือกโต๊ะ (1-70)</label>
-    <select id="tableNumber">
-        <option value="">-- เลือกโต๊ะ --</option>
-        <script>
-            for(let i=1;i<=70;i++){
-                document.write(`<option value="${i}">โต๊ะที่ ${i}</option>`);
-            }
-        </script>
-    </select>
+<div class="wrapper">
 
-    <input type="text" id="customerName" placeholder="กรอกชื่อผู้จอง">
+<select id="shopSelect">
+<option value="">-- เลือกร้านอาหาร --</option>
+</select>
 
-    <input type="number" id="amount" placeholder="จำนวนเงิน (บาท)">
+<div id="menuArea"></div>
 
-    <button onclick="showQR()">ชำระเงินออนไลน์</button>
+<div class="cart">
+<h3>ตะกร้า</h3>
+<div id="cartItems"></div>
+<div class="total">รวม: <span id="totalPrice">0</span> บาท</div>
+</div>
 
-    <div class="qr-section" id="qrSection">
-        <h3>สแกน QR เพื่อชำระเงิน</h3>
+<div class="card">
+<h3>เลือกโต๊ะ</h3>
+<select id="tableSelect">
+<option value="">-- เลือกหมายเลขโต๊ะ --</option>
+</select>
 
-        <!-- 🔥 ใส่รูป QR เดิมของเฟรชตรงนี้ -->
-        <img src="qr.png" alt="PromptPay QR">
+<button onclick="checkout()" class="pay-btn">
+ชำระเงิน
+</button>
+</div>
 
-        <p>โอนเสร็จแล้วกดปุ่มยืนยัน</p>
+<div id="paymentArea" style="display:none;" class="card">
+<h3>สแกนเพื่อชำระเงิน</h3>
+<p id="summary"></p>
 
-        <button onclick="confirmPayment()">ยืนยันว่าโอนแล้ว</button>
-
-        <div id="successMessage" class="success"></div>
-    </div>
+<img src="BA46DB23-10DE-40B5-B697-5F0BCF7D3FB7.jpeg"
+style="width:100%;max-width:350px;border-radius:10px;">
+</div>
 
 </div>
 
 <script>
-function showQR(){
-    let table = document.getElementById("tableNumber").value;
-    let name = document.getElementById("customerName").value;
-    let amount = document.getElementById("amount").value;
 
-    if(table === "" || name === "" || amount === ""){
-        alert("กรุณากรอกข้อมูลให้ครบ");
+const shops = [
+{
+name:"ร้าน สมฤทธิ์ ทรัพย์เจริญสุข",
+items:[
+{name:"กะเพราหมู",price:45},
+{name:"กะเพราไก่",price:40},
+{name:"ข้าวผัดหมู",price:45},
+{name:"ไข่ดาว",price:10}
+]
+},
+{
+name:"ร้าน บัวจีน",
+items:[
+{name:"ผัดไทย",price:50},
+{name:"ราดหน้า",price:45},
+{name:"ผัดซีอิ๊ว",price:45},
+{name:"สุกี้",price:50}
+]
+}
+];
+
+const shopSelect = document.getElementById("shopSelect");
+const menuArea = document.getElementById("menuArea");
+const cartItems = document.getElementById("cartItems");
+const totalPrice = document.getElementById("totalPrice");
+const tableSelect = document.getElementById("tableSelect");
+
+let cart = {};
+
+shops.forEach((shop,index)=>{
+    let option=document.createElement("option");
+    option.value=index;
+    option.textContent=shop.name;
+    shopSelect.appendChild(option);
+});
+
+// สร้างโต๊ะ 1-70
+for(let i=1;i<=70;i++){
+    let option=document.createElement("option");
+    option.value=i;
+    option.textContent="โต๊ะ "+i;
+    tableSelect.appendChild(option);
+}
+
+shopSelect.addEventListener("change",function(){
+    showMenu(this.value);
+});
+
+function showMenu(index){
+    menuArea.innerHTML="";
+    if(index==="") return;
+
+    let shop=shops[index];
+    let card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`<h3>${shop.name}</h3>`;
+
+    shop.items.forEach(item=>{
+        card.innerHTML+=`
+        <div class="menu-item">
+            <span>${item.name} (${item.price}฿)</span>
+            <div class="controls">
+                <button class="minus" onclick="updateCart('${item.name}',${item.price},-1)">➖</button>
+                <span id="${item.name}">0</span>
+                <button class="plus" onclick="updateCart('${item.name}',${item.price},1)">➕</button>
+            </div>
+        </div>`;
+    });
+
+    menuArea.appendChild(card);
+}
+
+function updateCart(name,price,change){
+    if(!cart[name]) cart[name]={qty:0,price:price};
+    cart[name].qty+=change;
+    if(cart[name].qty<=0) delete cart[name];
+
+    if(document.getElementById(name)){
+        document.getElementById(name).innerText=cart[name]?cart[name].qty:0;
+    }
+
+    renderCart();
+}
+
+function renderCart(){
+    cartItems.innerHTML="";
+    let total=0;
+    for(let item in cart){
+        let div=document.createElement("div");
+        div.innerText=`${item} x${cart[item].qty}`;
+        cartItems.appendChild(div);
+        total+=cart[item].qty*cart[item].price;
+    }
+    totalPrice.innerText=total;
+}
+
+function checkout(){
+    let table = tableSelect.value;
+    let total = totalPrice.innerText;
+
+    if(!table){
+        alert("กรุณาเลือกโต๊ะก่อน");
         return;
     }
 
-    document.getElementById("qrSection").style.display = "block";
+    if(total==0){
+        alert("กรุณาเลือกอาหารก่อน");
+        return;
+    }
+
+    document.getElementById("summary").innerText =
+        "โต๊ะ: "+table+" | ยอดชำระ: "+total+" บาท";
+
+    document.getElementById("paymentArea").style.display="block";
+
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+    });
 }
 
-function confirmPayment(){
-    document.getElementById("successMessage").innerHTML =
-        "✅ ระบบได้รับแจ้งการโอนแล้ว กรุณารอการตรวจสอบ";
-}
 </script>
 
 </body>
