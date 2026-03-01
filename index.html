@@ -4,68 +4,127 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MSU Smart Canteen</title>
+
 <style>
 body{
 font-family: Arial, sans-serif;
-background:#f4f6f9;
+margin:0;
+background:#f4f4f4;
+}
+
+header{
+background:#f7c948;
+padding:15px;
 text-align:center;
-padding:30px;
+font-size:22px;
+font-weight:bold;
+color:#333;
 }
+
 .container{
-background:white;
 padding:20px;
-border-radius:12px;
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
-max-width:400px;
-margin:auto;
 }
-h1{
-color:#6a0dad;
+
+.menu-item{
+background:white;
+padding:15px;
+margin-bottom:15px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
-input{
-width:90%;
-padding:10px;
-margin:10px 0;
-border-radius:8px;
-border:1px solid #ccc;
-}
+
 button{
-background:#6a0dad;
+background:#555;
 color:white;
 border:none;
-padding:10px 20px;
-border-radius:8px;
+padding:6px 12px;
+border-radius:6px;
 cursor:pointer;
 }
+
 button:hover{
-background:#520a9e;
+background:#333;
+}
+
+.cart{
+background:#fff3cd;
+padding:15px;
+border-radius:10px;
+margin-top:20px;
+}
+
+.total{
+font-weight:bold;
+font-size:18px;
+margin-top:10px;
+}
+
+.pay-btn{
+background:#f7c948;
+color:#333;
+width:100%;
+padding:10px;
+margin-top:10px;
+font-weight:bold;
 }
 </style>
 </head>
 <body>
 
+<header>🍽 MSU Smart Canteen</header>
+
 <div class="container">
-<h1>🍽 MSU Smart Canteen</h1>
-<p>กรอกเลขโต๊ะ (1 - 70)</p>
 
-<input type="number" id="tableNumber" placeholder="ใส่เลขโต๊ะ">
+<h3>เลือกเมนูอาหาร</h3>
 
-<br>
+<div class="menu-item">
+<span>ข้าวผัด - 50 บาท</span>
+<button onclick="addItem('ข้าวผัด',50)">เพิ่ม</button>
+</div>
 
-<button onclick="order()">เริ่มสั่งอาหาร</button>
+<div class="menu-item">
+<span>กะเพราไก่ - 55 บาท</span>
+<button onclick="addItem('กะเพราไก่',55)">เพิ่ม</button>
+</div>
 
-<p id="result"></p>
+<div class="menu-item">
+<span>ผัดไทย - 60 บาท</span>
+<button onclick="addItem('ผัดไทย',60)">เพิ่ม</button>
+</div>
+
+<div class="menu-item">
+<span>ชาเย็น - 25 บาท</span>
+<button onclick="addItem('ชาเย็น',25)">เพิ่ม</button>
+</div>
+
+<div class="cart">
+<h3>🛒 ตะกร้าของคุณ</h3>
+<div id="cartItems"></div>
+<div class="total">รวม: <span id="total">0</span> บาท</div>
+<button class="pay-btn" onclick="pay()">ชำระเงิน</button>
+</div>
+
 </div>
 
 <script>
-function order(){
-let table = document.getElementById("tableNumber").value;
-if(table >=1 && table <=70){
-document.getElementById("result").innerHTML =
-"✅ โต๊ะ " + table + " พร้อมสั่งอาหารแล้ว!<br><br>ไปหน้าชำระเงินผ่านเว็บได้เลย";
+let total = 0;
+let cart = [];
+
+function addItem(name,price){
+cart.push(name);
+total += price;
+document.getElementById("cartItems").innerHTML += name + " - " + price + " บาท<br>";
+document.getElementById("total").innerText = total;
+}
+
+function pay(){
+if(total === 0){
+alert("กรุณาเลือกอาหารก่อน");
 }else{
-document.getElementById("result").innerHTML =
-"❌ กรุณากรอกเลขโต๊ะ 1 - 70";
+alert("ยอดชำระทั้งหมด " + total + " บาท\nชำระผ่านเว็บเรียบร้อยแล้ว!");
 }
 }
 </script>
